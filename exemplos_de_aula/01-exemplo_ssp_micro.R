@@ -91,7 +91,7 @@ base_nomes_arrumados_preenchida %>%
 base_nomes_arrumados_preenchida %>% 
     tibble::view()
 
-# Primeiro amos separar as três bases e depois juntar pela mesma chave
+# Primeiro vamos separar as três bases e depois juntar pela mesma chave
 # Qual vai ser a estratégia:
 # usar as colunas: num_bo, ano_bo, delegacia_nome
 
