@@ -19,6 +19,27 @@ base_bruta <- read.delim(
 # importante é remover as duplicações proporcionadas pela
 # pelas rubricas/desdobramentos etc
 
+# Olhando a base
+tibble::view(base_bruta)
+
+
+# Verificando colunas
+dplyr::glimpse(base_bruta)
+
+# A unidade é o fato? (roubo de celular)
+base_bruta %>% 
+base_bruta %>% 
+  dplyr::count(ANO_BO, NUM_BO, DELEGACIA_CIRCUNSCRICAO, DELEGACIA_NOME)
+
+# Olhando uma situação em específico
+base_bruta %>% 
+  dplyr::filter(NUM_BO == 34, ANO_BO == 2021, DELEGACIA_NOME == "NUCLEO ROUBO DE CARGAS-SEC GUA") %>% 
+  tibble::view()
+
+
+
+
+
 # b) arrume os nomes da base
 
 # c) arrume as colunas de latitude e longitude
