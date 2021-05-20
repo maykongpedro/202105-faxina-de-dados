@@ -1,9 +1,14 @@
-library(magrittr)
-library(ggplot2)
-library(dplyr)
+library(magrittr, include.only = "%>%")
+# library(ggplot2)
+# library(dplyr)
 
 # Exercício 1 -------------------------------------------------------------
 
+# url <- "https://curso-r.github.io/202105-faxina/dados/DadosBO_2021_3(ROUBO%20DE%20CELULAR).xls"
+# download.file(url,destfile = "DadosBO_2021_3(ROUBO DE CELULAR).xls")
+# ou baixar o arquivo na página do curso: https://curso-r.github.io/202105-faxina/
+
+# abrir arquivo original
 base_bruta <- read.delim(
   "dados/DadosBO_2021_3(ROUBO DE CELULAR).xls",
   fileEncoding = "UTF-16LE",
@@ -11,6 +16,7 @@ base_bruta <- read.delim(
   header = TRUE,
   stringsAsFactors = FALSE
 )
+
 
 # Exercício 1
 # a) transforme a base bruta em uma base tidy
@@ -20,15 +26,13 @@ base_bruta <- read.delim(
 # pelas rubricas/desdobramentos etc
 
 # Olhando a base
-tibble::view(base_bruta)
+#tibble::view(base_bruta)
 
 
 # Verificando colunas
-dplyr::glimpse(base_bruta)
-
+#dplyr::glimpse(base_bruta)
+dplyr::glimpse(base)
 # A unidade é o fato? (roubo de celular)
-base_bruta 
-
 # Quando faço isso, percebo que existem algumas repetições
 base_bruta %>% 
   dplyr::count(ANO_BO, NUM_BO, DELEGACIA_CIRCUNSCRICAO, DELEGACIA_NOME)
@@ -53,7 +57,10 @@ base_bruta %>%
   janitor::adorn_pct_formatting() %>%
   
   # re-ordenar
-  dplyr::arrange(desc(n_n))
+  dplyr::arrange(desc(n_n)) %>% 
+  
+  # tabela
+  knitr::kable()
 
 # ==============================================================================
 
@@ -101,7 +108,8 @@ base_trt_no_dupes %>%
   dplyr::filter(n != 1) %>% 
   janitor::tabyl(n) %>% 
   janitor::adorn_pct_formatting() %>%
-  dplyr::arrange(desc(n_n))
+  dplyr::arrange(desc(n_n)) %>% 
+  knitr::kable()
 
 # Grande parte dos casos foi resolvida, porém ainda temos alguns itens que variam
 # de 2 linhas a 6, implicando que eles não são necessariamente duplicatas, então
@@ -115,14 +123,15 @@ base_trt_no_dupes %>%
 
 # Nesse caso temos uma rúbrica de recepção qualificada e outra para o roubo em si
 base_trt_no_dupes %>% 
-  filter(ANO_BO == 2021,
+  dplyr::filter(ANO_BO == 2021,
          NUM_BO == 37,
          DELEGACIA_NOME == "DEIC-3ª DELEGACIA DA DISCCPAT") %>% 
   tibble::view()
 
-
-
 # Retirar receptação, por não ser um roubo?
+# Como prosseguir com essas "duplicatas"?
+
+
 # base_trt_no_dupes %>% 
 #   filter(!stringr::str_detect(RUBRICA, "Receptação")) %>% 
 #   #tibble::view()
