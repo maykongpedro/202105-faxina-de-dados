@@ -27,6 +27,8 @@ tabela_pagina1 <- tabulizer::extract_tables(
   output = "data.frame"
 )
 
+tabel_pagina1
+
 tabela_pagina1_tidy <- tabela_pagina1 %>% 
   dplyr::first() %>% 
   tibble::as_tibble() %>% 
