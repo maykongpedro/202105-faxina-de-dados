@@ -26,21 +26,19 @@ base_bruta <- read.delim(
 # pelas rubricas/desdobramentos etc
 
 # Olhando a base
-#tibble::view(base_bruta)
-
+tibble::view(base_bruta)
 
 # Verificando colunas
-#dplyr::glimpse(base_bruta)
-dplyr::glimpse(base)
+dplyr::glimpse(base_bruta)
+
 # A unidade é o fato? (roubo de celular)
 # Quando faço isso, percebo que existem algumas repetições
 base_bruta %>% 
   dplyr::count(ANO_BO, NUM_BO, DELEGACIA_CIRCUNSCRICAO, DELEGACIA_NOME)
 
 
-
 # Olhando apenas para as situações que se repetem da pra ver que são muitos itens
-# com 2 casos e outros que chegama  30. Sem a coluna "DELEGACIA_CIRCUNSCRICAO"
+# com 2 casos e outros que chegam a  30. Não vou usar a coluna "DELEGACIA_CIRCUNSCRICAO"
 # por não mudar o resultado
 base_bruta %>% 
   
