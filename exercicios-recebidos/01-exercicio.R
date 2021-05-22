@@ -175,5 +175,40 @@ base_arrumada_long_lat <-
 # que tenha apenas marcas escritas assim:
 # APPLE, LENOVO, MICROSOFT, ..., OUTROS
 
+# verificando itens da coluna de marca
+base_arrumada_long_lat %>% 
+  distinct(marca_celular)
+
+# arrumando
+base_arrumada_final <-
+  base_arrumada_long_lat %>%
+  dplyr::mutate(
+    marca_celular = dplyr::case_when(
+      marca_celular == "Apple" ~ "APPLE",
+      marca_celular == "Samsung" ~ "SAMSUNG",
+      marca_celular == "SANSUNG" ~ "SAMSUNG",
+      marca_celular == "Xiaomi" ~ "XIAOMI",
+      marca_celular == "Motorola" ~ "MOTOROLA",
+      marca_celular == "Motorolla" ~ "MOTOROLA",
+      marca_celular == "Alcatel" ~ "ALCATEL",
+      marca_celular == "Positivo" ~ "POSITIVO",
+      marca_celular == "Asus" ~ "ASUS",
+      marca_celular == "Nokia" ~ "NOKIA",
+      marca_celular == "Huawei" ~ "HUAWEI",
+      marca_celular == "Lenovo" ~ "LENOVO",
+      marca_celular == "Sony" ~ "SONY",
+      marca_celular == "Multilaser" ~ "MULTILASER",
+      marca_celular == "Microsoft" ~ "MICROSOFT",
+      marca_celular == "Outros" ~ "OUTROS",
+      marca_celular == "" ~ "OUTROS",
+      TRUE ~ marca_celular
+    )
+  )
+
+# Verificando se ficou correto
+base_arrumada_final %>% 
+  dplyr::distinct(marca_celular)
+
+
 # d) (opcional) faça um mapa com pontos usando latitudes e longitudes.
 # use como cor a coluna marca_celular (arrumada)
