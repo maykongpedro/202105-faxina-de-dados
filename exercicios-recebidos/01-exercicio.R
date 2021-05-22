@@ -1,6 +1,6 @@
 library(magrittr, include.only = "%>%")
 # library(ggplot2)
-# library(dplyr)
+library(dplyr)
 
 # Exercício 1 -------------------------------------------------------------
 
@@ -142,17 +142,34 @@ base_trt_no_dupes %>%
 
 # ==============================================================================
 
-
-
 # b) arrume os nomes da base
+base_trt_no_dupes <-
+  base_trt_no_dupes %>% 
+  janitor::clean_names()
+
 
 # c) arrume as colunas de latitude e longitude
-
 # Dica 1: as.numeric("1.05") transforma o texto "1.05" no número 1.05
 # Dica 2: Essa planilha usa "," como separador decimal
 
-# d) padronize a coluna marca_celular
+base_arrumada_long_lat <-
+  base_trt_no_dupes %>%
+  mutate(
+    latitude = stringr::str_replace_all(latitude, 
+                                        pattern = ",", 
+                                        replacement = "."),
+    
+    longitude = stringr::str_replace_all(longitude, 
+                                         pattern = ",", 
+                                         replacement = "."),
+    
+    latitude = as.numeric(latitude, dec = ","),
+    longitude = as.numeric(longitude, dec = ",")
+    
+  )
 
+
+# d) padronize a coluna marca_celular
 # Dica 1: Use a função dplyr::case_when
 # Dica 2: Você pode tentar chegar em uma coluna final
 # que tenha apenas marcas escritas assim:
