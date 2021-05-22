@@ -36,6 +36,8 @@ indicadores_limpo <- indicadores %>%
 # Exercício 2 - Sobre os IDs, o cliente informou que deveria ter apenas uma
 # linha para cada trinca (id-ano-mes).
 
+
+
 # Por conta de uma inconsistência, poderia acontecer de virem duas ou mais
 # linhas para o mesma trinca (id-ano-mes).
 
