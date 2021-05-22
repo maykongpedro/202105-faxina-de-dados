@@ -1,6 +1,7 @@
 library(magrittr, include.only = "%>%")
-# library(ggplot2)
 library(dplyr)
+library(ggplot2)
+library(sf)
 
 # Exercício 1 -------------------------------------------------------------
 
@@ -30,6 +31,16 @@ tibble::view(base_bruta)
 
 # Verificando colunas
 dplyr::glimpse(base_bruta)
+
+
+# Corrigindo datas (apenas o que tem data, sem horário)
+base_bruta <-
+  base_bruta %>% 
+  mutate(
+    DATAOCORRENCIA = readr::parse_date(DATAOCORRENCIA, format =  c("%d/%m/%Y")),
+    DATACOMUNICACAO = readr::parse_date(DATACOMUNICACAO, format =  c("%d/%m/%Y"))         
+  )
+
 
 # A unidade é o fato? (roubo de celular)
 # Quando faço isso, percebo que existem algumas repetições
@@ -212,3 +223,14 @@ base_arrumada_final %>%
 
 # d) (opcional) faça um mapa com pontos usando latitudes e longitudes.
 # use como cor a coluna marca_celular (arrumada)
+estado_sp <- geobr::read_state("SP")
+base_arrumada_final %>% 
+  ggplot()+
+  geom_sf(data = estado_sp, fill = "#F2F2F2") +
+  geom_point(aes(x = longitude , y = latitude, color = marca_celular)) + 
+  scale_colour_viridis_d(option = "magma") +
+  labs(x = "", y = "", color = "Marca do celular") +
+  ggtitle("Distribuição espacial dos roubos de celulares em São Paulo ") +
+  theme_bw()
+
+
