@@ -5,7 +5,9 @@ library(magrittr)
 ## http://dados.mj.gov.br/dataset/8ff7032a-d6db-452b-89f1-d860eb6965ff/resource/c2cce323-24c2-4430-8918-e24b2966213c/download/crf2019-dados-abertos.zip
 # Baixe e descompacte o arquivo na pasta "dados/" do material
 
-path <- "dados/CRF2019 Dados Abertos.csv"
+path <- "dados/crf2019-dados-abertos/CRF2019 Dados Abertos.csv"
+
+readr::read_lines(path, n_max = 10)
 
 # claro que vai dar problema
 da_sindec <- readr::read_csv2(path)
@@ -26,6 +28,7 @@ stringr::str_count(linhas_bugadas, "; ")
 stringr::str_count(linhas_bugadas, ";") - stringr::str_count(linhas_bugadas, "; ")
 
 # tivemos sorte! nem sempre é assim, mas segue o jogo
+
 linhas[problemas$row + 1] <- stringr::str_remove_all(linhas[problemas$row + 1], "; ")
 
 da_sindec <- linhas %>%
@@ -34,8 +37,7 @@ da_sindec <- linhas %>%
   janitor::clean_names()
 
 da_sindec %>%
-  dplyr::slice(problemas$row + 1) %>% View
-
+  dplyr::slice(problemas$row) %>% View
 
 # tidy --------------------------------------------------------------------
 
@@ -63,8 +65,6 @@ contagem_sexo_faixa <- da_sindec %>%
   ) %>%
   dplyr::count(sexo, faixa)
 
-contagem_sexo_faixa
-
 gg_sexo_faixa <- contagem_sexo_faixa %>%
   dplyr::mutate(
     faixa = forcats::fct_rev(faixa),
@@ -87,14 +87,15 @@ gg_mapa <- map_uf %>%
   ggplot2::ggplot() +
   ggplot2::geom_sf(ggplot2::aes(fill = p_atendida), colour = "black", size = .2)
 
-gg_mapa
 
 # 3. um grafico de barras de assuntos mais frequentes
+
 da_sindec %>%
   dplyr::count(descricao_assunto, sort = TRUE) %>%
   print(n = 50)
 
 # muitas categorias. Vamos reclassificar? VAMOS!
+
 lista_regex <- list(
   tel = c("Telef"),
   casa = c("TV", "Televis", "Fogão", "Lavar Roupa", "M[oó]ve[il]",
@@ -112,10 +113,7 @@ lista_regex <- list(
   # transforma em regex
   purrr::map(stringr::regex, ignore_case = TRUE)
 
-lista_regex
-
-contagem_tema <-
-  da_sindec %>%
+contagem_tema <- da_sindec %>%
   dplyr::mutate(tema = dplyr::case_when(
     stringr::str_detect(descricao_assunto, lista_regex$tel) ~ "Telefone",
     stringr::str_detect(descricao_assunto, lista_regex$casa) ~ "Casa",
@@ -127,8 +125,6 @@ contagem_tema <-
   )) %>%
   dplyr::count(tema, sort = TRUE)
 
-contagem_tema
-
 gg_tema <- contagem_tema %>%
   dplyr::mutate(
     tema = forcats::fct_reorder(tema, n),
@@ -137,7 +133,6 @@ gg_tema <- contagem_tema %>%
   ggplot2::ggplot(ggplot2::aes(n, tema)) +
   ggplot2::geom_col()
 
-gg_tema
 # ainda tem muito a melhorar, mas vamos seguir.
 
 # 4. uma tabela % atendida por natureza
@@ -230,6 +225,7 @@ da_sindec_empresas_arrumado <- da_sindec_empresas %>%
   )
 
 # AGORA precisamos cruzar com a base da RFB. Vamos fazer em chunks!
+
 filtrar_empresas <- function(dados, pos) {
   dados %>%
     dplyr::semi_join(da_sindec_empresas_arrumado, "cnpj")
@@ -249,7 +245,7 @@ dados_rfb <- readr::read_delim_chunked(
 # legal! agora preciso sumarizar para obter os numeros finais
 
 # tab_nat <- qsacnpj::tab_natureza_juridica
-tab_nat <- readr::read_rds("dados/tab_nat.rds")
+tab_nat <- readr::read_rds("dados/case/tab_nat.rds")
 
 tab_natureza <- da_sindec_empresas_arrumado %>%
   dplyr::inner_join(
